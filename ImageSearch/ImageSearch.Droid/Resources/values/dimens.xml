@@ -1,4 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<resources>
+
+<resources xmlns:tools="http://schemas.android.com/tools">
   <dimen name="drawer_width">240dp</dimen>
+  <dimen name="design_fab_size_mini" tools:override="true">100dp</dimen>
+  <dimen name="design_fab_content_size" tools:override="true">60dp</dimen>
 </resources>

@@ -33,8 +33,15 @@ namespace ImageSearch.Services
             float score = 0;
             foreach (var emotionResult in emotionResults)
             {
-                score = score + emotionResult.Scores.Happiness;
+                try
+                {
+                    score = score + emotionResult.Scores.Happiness;
+                }
+                catch (Exception ex) { }
             }
+
+            if (score == 0)
+                return 0;
 
             return score / emotionResults.Count();
         }
@@ -45,9 +52,9 @@ namespace ImageSearch.Services
             double result = Math.Round(score, 2);
 
             if (score >= 50)
-                return result + " % :-)";
+                return string.Format("You are {0}% happy :-) It's time for some cute...", result);
             else
-                return result + "% :-(";
+                return string.Format("You are {0}% happy :-( It's time for some cute...", result);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace ImageSearch.Droid.Adapters
 
             // Replace the contents of the view with that element
             var holder = viewHolder as ImageAdapterViewHolder;
-            holder.Caption.Text = item.Title;
+            //holder.Caption.Text = item.Title;
             Picasso.With(activity).Load(item.ImageLink).Into(holder.Image);
         }
 
@@ -56,7 +56,6 @@ namespace ImageSearch.Droid.Adapters
 
         void OnClick(ImageAdapterClickEventArgs args) => ItemClick?.Invoke(this, args);
         void OnLongClick(ImageAdapterClickEventArgs args) => ItemLongClick?.Invoke(this, args);
-
     }
 
     public class ImageAdapterViewHolder : RecyclerView.ViewHolder
@@ -68,7 +67,7 @@ namespace ImageSearch.Droid.Adapters
                             Action<ImageAdapterClickEventArgs> longClickListener) : base(itemView)
         {
             Image = itemView.FindViewById<ImageView>(Resource.Id.imageView);
-            Caption = itemView.FindViewById<TextView>(Resource.Id.textView);
+            //Caption = itemView.FindViewById<TextView>(Resource.Id.textView);
             itemView.Click += (sender, e) => clickListener(new ImageAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
             itemView.LongClick += (sender, e) => longClickListener(new ImageAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
         }

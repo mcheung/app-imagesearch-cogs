@@ -37,35 +37,42 @@ namespace ImageSearch.ViewModel
             {
                 await UserDialogs.Instance.AlertAsync("On interwebs :(");
                 return false;
-
             }
-            
-			//Bing Image API
-			var url = $"https://api.cognitive.microsoft.com/bing/v5.0/images/" + 
-				      $"search?q={query}" +
-					  $"&count=20&offset=0&mkt=en-us&safeSearch=Strict";
+
+            //Bing Image API
+            //var url = $"https://api.cognitive.microsoft.com/bing/v5.0/images/" + 
+            //	      $"search?q={query}" +
+            //		  $"&count=20&offset=0&mkt=en-us&safeSearch=Strict";
+
+            //Google Image API
+            var url =
+                string.Format(
+                    "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&q={2}&searchType=image&alt=json&num=10&start=1",
+                    CognitiveServicesKeys.GoogleSearchApi, 
+                    CognitiveServicesKeys.GoogleCx, 
+                    query);
 
             try
             {
-                var headerKey = "Ocp-Apim-Subscription-Key";
-                var headerValue = CognitiveServicesKeys.BingSearch;
+                //var headerKey = "Ocp-Apim-Subscription-Key";
+                //var headerValue = CognitiveServicesKeys.BingSearch;
 
                 var client = new HttpClient();
-                client.DefaultRequestHeaders.Add(
-                    headerKey, headerValue);
+                //client.DefaultRequestHeaders.Add(
+                //    headerKey, headerValue);
 
                 var json = await client.GetStringAsync(url);
 
-                var result = JsonConvert.DeserializeObject<SearchResult>(
+                var result = JsonConvert.DeserializeObject<Shared.Services.GoogleSearch.SearchResult>(
                     json);
 
                 var images = result.Images.Select(i => new ImageResult
                 {
-                    ContextLink = i.HostPageUrl,
-                    FileFormat = i.EncodingFormat,
-                    ImageLink = i.ContentUrl,
-                    ThumbnailLink = i.ThumbnailUrl ?? i.ContentUrl,
-                    Title = i.Name
+                    ContextLink = i.DisplayLink,
+                    FileFormat = i.Mime,
+                    ImageLink = i.Link,
+                    ThumbnailLink = i.Link,
+                    Title = i.Title
                 });
 
                 Images.ReplaceRange(images);
@@ -73,7 +80,6 @@ namespace ImageSearch.ViewModel
             }
             catch (Exception ex)
             {
-
                 await UserDialogs.Instance.AlertAsync("Something went terribly wrong, please open a ticket with support.");
                 return false;
             }
@@ -81,11 +87,7 @@ namespace ImageSearch.ViewModel
 			return true;
         }
 
-
-   
-
-
-        public async Task AnalyzeImageAsync(string imageUrl)
+        public async Task<string> AnalyzeImageAsync(string imageUrl)
         {
             var result = string.Empty;
             try
@@ -103,16 +105,22 @@ namespace ImageSearch.ViewModel
             {
                 result =  "Unable to analyze image";
             }
-            await UserDialogs.Instance.AlertAsync(result);
 
+            //await UserDialogs.Instance.AlertAsync(result);
+
+            //Return the percentage
+            return result;
         }
 
+        public async Task ShowImageMessage(string imageType, double percentage)
+        {
+            await UserDialogs.Instance.AlertAsync(string.Format("You're {0}% happy so here's one of the {1} you got, aww", percentage, imageType));
+        }
 
-
-
-        public async Task TakePhotoAndAnalyzeAsync(bool useCamera = true)
+        public async Task<double> TakePhotoAndAnalyzeAsync(bool useCamera = true)
         {
             string result = "Error";
+            double emotion = 100.0;
             MediaFile file = null;
             IProgressDialog progress;
 
@@ -139,9 +147,9 @@ namespace ImageSearch.ViewModel
                     result = "No photo taken.";
                 else
                 {
-                    var emotion = await EmotionService.GetAverageHappinessScoreAsync(file.GetStream());
+                    emotion = await EmotionService.GetAverageHappinessScoreAsync(file.GetStream());
 
-                    result = EmotionService.GetHappinessMessage(emotion);
+                    result = EmotionService.GetHappinessMessage((float)emotion);
                 }
             }
             catch(Exception ex)
@@ -149,8 +157,11 @@ namespace ImageSearch.ViewModel
                 result =  ex.Message;
             }
 
-            await UserDialogs.Instance.AlertAsync(result);
-        }
+            //await UserDialogs.Instance.AlertAsync(result);
 
+            emotion = emotion * 100;
+            emotion = Math.Round(emotion, 2);
+            return emotion;
+        }
     }
 }

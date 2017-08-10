@@ -11,7 +11,7 @@
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
-        <LinearLayout
+    <!--<LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -42,19 +42,71 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:text="Search" />
-        </LinearLayout>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_below="@id/main_content"
-            android:scrollbars="vertical"
+        </LinearLayout>-->
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            android:layout_below="@id/toolbar"
+            android:padding="5dp">
+            <android.support.v7.widget.CardView
+                android:id="@+id/help_card"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal">
+              <TextView
+                    android:id="@+id/help_card_text"
+                    android:text="Take a selfie. \nGet some cute!"
+                    android:layout_marginTop="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#FF1493" />
+            </android.support.v7.widget.CardView>
+          
+            <TextView
+                    android:id="@+id/happiness_level_text"
+                    android:layout_below="@id/toolbar"
+                    android:text="Your happiness level"
+                    android:layout_marginTop="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:visibility="gone"
+                    android:textColor="#FFF" 
+                    android:background="#FF1493" />
+          
+            <android.support.v7.widget.RecyclerView
+              android:id="@+id/recyclerView"
+              android:layout_below="@id/toolbar"
+              android:scrollbars="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent" />
+          
+        </LinearLayout>
     </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/my_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        style="?android:attr/android:progressBarStyleLarge"
+        android:indeterminate="true"
+        android:visibility="gone" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_photo"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_gravity="bottom|right|end"
+        android:layout_gravity="bottom|center"
         android:src="@drawable/ic_photo"
         android:layout_margin="16dp"
         android:clickable="true"
